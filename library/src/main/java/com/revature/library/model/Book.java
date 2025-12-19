@@ -1,6 +1,9 @@
 package com.revature.library.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDateTime;
 
 /**
@@ -19,14 +22,17 @@ public class Book {
 
     // TODO: Add @Column(nullable = false) annotation
     @Column(nullable = false)
+    @NotBlank(message = "Title is required")
     private String title;
 
     // TODO: Add @Column(nullable = false) annotation
     @Column(nullable = false)
+    @NotBlank(message = "Author is required")
     private String author;
 
     // TODO: Add @Column(unique = true) annotation
     @Column(unique = true)
+    @Pattern(regexp = "^[0-9a-zA-Z-]+$", message = "Invalid ISBN format")
     private String isbn;
 
     private boolean available = true;

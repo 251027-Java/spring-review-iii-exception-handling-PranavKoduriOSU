@@ -1,5 +1,7 @@
 package com.revature.library.service;
 
+import com.revature.library.exception.BookNotAvailableException;
+import com.revature.library.exception.BookNotFoundException;
 import com.revature.library.model.Book;
 import com.revature.library.repository.BookRepository;
 import org.springframework.stereotype.Service;
@@ -38,21 +40,20 @@ public class BookService {
 
     public Book checkoutBook(Long bookId) {
         // TODO: Find book, set available = false, save and return
-        Book book = repo.findById(bookId).orElse(null);
-        if (book != null){
-            book.setAvailable(false);
-            repo.save(book);
-        }
+        Book book = repo.findById(bookId).orElseThrow(() -> new BookNotFoundException(String.format("Book ID=%d not found.", bookId)));
+
+        if (!book.getAvailable()) throw new BookNotAvailableException(String.format("Book ID=%d not available.", bookId));
+        book.setAvailable(false);
+
+        repo.save(book);
         return book;
     }
 
     public Book returnBook(Long bookId) {
         // TODO: Find book, set available = true, save and return
-        Book book = repo.findById(bookId).orElse(null);
-        if (book != null){
-            book.setAvailable(true);
-            repo.save(book);
-        }
+        Book book = repo.findById(bookId).orElseThrow(() -> new BookNotFoundException(String.format("Book ID=%d not found.", bookId)));
+        book.setAvailable(true);
+        repo.save(book);
         return book;
     }
 }
